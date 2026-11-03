@@ -2,10 +2,10 @@
   <Teleport to="body">
     <Transition name="modal">
       <div v-if="isOpen" class="modal-overlay" @click="close">
-        <div class="modal-container tasks-modal-container" @click.stop>
+        <div class="modal-container" @click.stop>
           <div class="modal-header">
             <h3 class="modal-title">{{ t('tasks.title') }}</h3>
-            <button class="close-button" @click="close">
+            <button class="close-button" :aria-label="t('common.close')" @click="close">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
@@ -23,7 +23,7 @@
                     v-model="newTask.title"
                     type="text"
                     :placeholder="t('tasks.taskTitlePlaceholder')"
-                    class="task-input"
+                    class="input"
                     @keyup.enter="handleAddTask"
                   />
                 </div>
@@ -35,7 +35,7 @@
                   <select
                     id="task-priority"
                     v-model="newTask.priority"
-                    class="task-select"
+                    class="select"
                   >
                     <option value="high">{{ t('priority.high') }}</option>
                     <option value="medium">{{ t('priority.medium') }}</option>
@@ -49,12 +49,12 @@
                     id="task-due-date"
                     v-model="newTask.dueDate"
                     type="date"
-                    class="task-input"
+                    class="input"
                   />
                 </div>
 
                 <div class="form-group-btn">
-                  <button @click="handleAddTask" class="task-add-btn" :disabled="!newTask.title.trim() || !newTask.dueDate">
+                  <button @click="handleAddTask" class="btn btn-primary" :disabled="!newTask.title.trim() || !newTask.dueDate">
                     {{ t('tasks.addTask') }}
                   </button>
                 </div>
@@ -85,7 +85,7 @@
                     />
                     <span class="task-title" @click="$emit('toggle-task', task.id)">{{ task.title }}</span>
                   </div>
-                  <button @click="$emit('delete-task', task.id)" class="task-delete-btn" title="Delete task">
+                  <button @click="$emit('delete-task', task.id)" class="task-delete-btn" :title="t('tasks.delete')" :aria-label="t('tasks.delete')">
                     ×
                   </button>
                 </div>
@@ -110,7 +110,7 @@
           </div>
 
           <div class="modal-footer">
-            <button class="btn-secondary" @click="close">{{ t('profileDetails.close') }}</button>
+            <button class="btn btn-secondary" @click="close">{{ t('profileDetails.close') }}</button>
           </div>
         </div>
       </div>
@@ -119,8 +119,9 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from '../composables/useI18n'
+import { useSound } from '../composables/useSound'
 
 export default {
   name: 'TasksModal',
@@ -137,6 +138,10 @@ export default {
   emits: ['close', 'add-task', 'delete-task', 'toggle-task'],
   setup(props, { emit }) {
     const { t, currentLocale } = useI18n()
+    const { play } = useSound()
+
+    // Audible cue on visibility change only (not on mount); add/toggle are owned by App.vue so no success/error sounds here
+    watch(() => props.isOpen, (open) => play(open ? 'open' : 'close'))
     const newTask = ref({
       title: '',
       priority: 'medium',
@@ -245,122 +250,29 @@ export default {
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
+.modal-container { max-width: 800px; }
 
-.modal-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  width: 90%;
-  max-width: 700px;
-  max-height: 85vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.tasks-modal-container {
-  max-width: 900px;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 2rem;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.modal-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #0f172a;
-  margin: 0;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  color: #64748b;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.close-button:hover {
-  background: #f1f5f9;
-  color: #0f172a;
-}
-
-.modal-body {
-  padding: 2rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.modal-footer {
-  padding: 1.5rem 2rem;
-  border-top: 2px solid #e2e8f0;
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  background: #f1f5f9;
-  color: #475569;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: #e2e8f0;
-}
-
-/* Task Form */
+/* Task form */
 .task-form {
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  background: var(--gray-10);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
 }
 
 .form-row {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
-.form-row:last-child {
-  margin-bottom: 0;
-}
+.form-row:last-child { margin-bottom: 0; }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-.form-group.flex-1 {
+  gap: var(--space-2);
   flex: 1;
 }
 
@@ -370,115 +282,64 @@ export default {
 }
 
 label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #475569;
-}
-
-.task-input,
-.task-select {
-  padding: 0.75rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: border-color 0.2s ease;
-  font-family: inherit;
-}
-
-.task-input:focus,
-.task-select:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.task-select {
-  cursor: pointer;
-  background: white;
-}
-
-.task-add-btn {
-  padding: 0.75rem 1.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  white-space: nowrap;
-  height: fit-content;
-}
-
-.task-add-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-.task-add-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
 }
 
 .tasks-divider {
   height: 1px;
-  background: #e2e8f0;
-  margin: 2rem 0;
+  background: var(--border);
+  margin: var(--space-6) 0;
 }
 
 .no-tasks {
   text-align: center;
-  padding: 3rem;
-  color: #64748b;
-  font-size: 1.1rem;
-  font-style: italic;
+  padding: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-md);
 }
 
 .tasks-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
 .task-item {
-  background: white;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 1rem 1.25rem;
-  transition: all 0.2s ease;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
 }
 
 .task-item:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
 }
 
-.task-item.priority-high {
-  border-left: 4px solid #dc2626;
-}
+.task-item.priority-high { border-left-color: var(--status-danger-dot); }
+.task-item.priority-medium { border-left-color: var(--status-warning-dot); }
+.task-item.priority-low { border-left-color: var(--brand); }
 
-.task-item.priority-medium {
-  border-left: 4px solid #f59e0b;
-}
-
-.task-item.priority-low {
-  border-left: 4px solid #2563eb;
-}
-
-.task-item.completed {
-  opacity: 0.6;
-}
+.task-item.completed { border-left-color: var(--gray-30); }
 
 .task-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.75rem;
-  gap: 1rem;
+  margin-bottom: var(--space-3);
+  gap: var(--space-4);
 }
 
 .task-check-title {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-3);
   flex: 1;
 }
 
@@ -486,7 +347,7 @@ label {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: var(--brand);
   flex-shrink: 0;
 }
 
@@ -494,28 +355,29 @@ label {
   flex: 1;
   cursor: pointer;
   user-select: none;
-  color: #0f172a;
-  font-size: 1rem;
-  font-weight: 600;
+  color: var(--text);
+  font-size: var(--text-md);
+  font-weight: 500;
   line-height: 1.4;
 }
 
 .task-item.completed .task-title {
   text-decoration: line-through;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
+/* Destructive icon button: neutral until hovered, then danger tokens */
 .task-delete-btn {
-  width: 28px;
-  height: 28px;
-  background: #ef4444;
-  color: white;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  color: var(--text-muted);
   border: none;
-  border-radius: 6px;
-  font-size: 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: var(--text-lg);
   line-height: 1;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -524,98 +386,43 @@ label {
 }
 
 .task-delete-btn:hover {
-  background: #dc2626;
-  transform: scale(1.1);
+  background: var(--status-danger-bg);
+  color: var(--status-danger-fg);
 }
 
 .task-footer {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
-.priority-badge {
-  font-size: 0.688rem;
+.priority-badge,
+.status-badge {
+  font-size: var(--text-xs);
   font-weight: 600;
-  text-transform: uppercase;
-  padding: 0.25rem 0.625rem;
-  border-radius: 4px;
-  letter-spacing: 0.025em;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  line-height: 18px;
 }
 
-.priority-badge.high {
-  background: #fecaca;
-  color: #991b1b;
-}
+.priority-badge { text-transform: capitalize; }
 
-.priority-badge.medium {
-  background: #fed7aa;
-  color: #92400e;
-}
-
-.priority-badge.low {
-  background: #dbeafe;
-  color: #1e40af;
-}
+.priority-badge.high { background: var(--status-danger-bg); color: var(--status-danger-fg); }
+.priority-badge.medium { background: var(--status-warning-bg); color: var(--status-warning-fg); }
+.priority-badge.low { background: var(--status-info-bg); color: var(--status-info-fg); }
 
 .task-due-date {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.813rem;
-  color: #64748b;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
 }
 
-.task-due-date svg {
-  color: #94a3b8;
-}
+.status-badge { margin-left: auto; }
 
-.status-badge {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.625rem;
-  border-radius: 4px;
-  margin-left: auto;
-}
-
-.status-badge.overdue {
-  background: #fecaca;
-  color: #991b1b;
-}
-
-.status-badge.urgent {
-  background: #fed7aa;
-  color: #92400e;
-}
-
-.status-badge.upcoming {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.status-badge.completed {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-/* Modal transitions */
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.modal-enter-active .modal-container,
-.modal-leave-active .modal-container {
-  transition: transform 0.3s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-from .modal-container,
-.modal-leave-to .modal-container {
-  transform: scale(0.9);
-}
+.status-badge.overdue { background: var(--status-danger-bg); color: var(--status-danger-fg); }
+.status-badge.urgent { background: var(--status-warning-bg); color: var(--status-warning-fg); }
+.status-badge.upcoming { background: var(--status-info-bg); color: var(--status-info-fg); }
+.status-badge.completed { background: var(--status-success-bg); color: var(--status-success-fg); }
 </style>

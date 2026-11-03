@@ -9,25 +9,25 @@
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
       <div class="stats-grid">
-        <div class="stat-card success">
+        <div class="stat-card success reveal">
           <div class="stat-label">{{ t('status.delivered') }}</div>
           <div class="stat-value">{{ getOrdersByStatus('Delivered').length }}</div>
         </div>
-        <div class="stat-card info">
+        <div class="stat-card info reveal">
           <div class="stat-label">{{ t('status.shipped') }}</div>
           <div class="stat-value">{{ getOrdersByStatus('Shipped').length }}</div>
         </div>
-        <div class="stat-card warning">
+        <div class="stat-card warning reveal">
           <div class="stat-label">{{ t('status.processing') }}</div>
           <div class="stat-value">{{ getOrdersByStatus('Processing').length }}</div>
         </div>
-        <div class="stat-card danger">
+        <div class="stat-card danger reveal">
           <div class="stat-label">{{ t('status.backordered') }}</div>
           <div class="stat-value">{{ getOrdersByStatus('Backordered').length }}</div>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card reveal">
         <div class="card-header">
           <h3 class="card-title">{{ t('orders.allOrders') }} ({{ orders.length }})</h3>
         </div>
@@ -41,7 +41,7 @@
                 <th class="col-status">{{ t('orders.table.status') }}</th>
                 <th class="col-date">{{ t('orders.table.orderDate') }}</th>
                 <th class="col-date">{{ t('orders.table.expectedDelivery') }}</th>
-                <th class="col-value">{{ t('orders.table.totalValue') }}</th>
+                <th class="col-value num">{{ t('orders.table.totalValue') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -68,7 +68,7 @@
                 </td>
                 <td class="col-date">{{ formatDate(order.order_date) }}</td>
                 <td class="col-date">{{ formatDate(order.expected_delivery) }}</td>
-                <td class="col-value"><strong>{{ currencySymbol }}{{ order.total_value.toLocaleString() }}</strong></td>
+                <td class="col-value num"><strong>{{ currencySymbol }}{{ order.total_value.toLocaleString() }}</strong></td>
               </tr>
             </tbody>
           </table>
@@ -204,38 +204,55 @@ export default {
 }
 
 /* Items details styling */
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .items-details {
   position: relative;
 }
 
 .items-summary {
   cursor: pointer;
-  color: #3b82f6;
+  color: var(--brand);
   font-weight: 500;
   list-style: none;
   user-select: none;
   display: inline-block;
+  border-radius: var(--radius-sm);
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .items-summary::-webkit-details-marker {
   display: none;
 }
 
+/* Thin chevron drawn with borders instead of a glyph */
 .items-summary::before {
-  content: '▶';
+  content: '';
   display: inline-block;
-  margin-right: 0.375rem;
-  font-size: 0.75rem;
-  transition: transform 0.2s;
+  width: 6px;
+  height: 6px;
+  margin-right: var(--space-2);
+  border-right: 2px solid currentColor;
+  border-top: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--dur-base) var(--ease);
 }
 
 .items-details[open] .items-summary::before {
-  transform: rotate(90deg);
+  transform: rotate(135deg);
 }
 
 .items-summary:hover {
-  color: #2563eb;
+  color: var(--brand-hover);
   text-decoration: underline;
+}
+
+.items-summary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 /* Dropdown container */
@@ -243,12 +260,12 @@ export default {
   position: absolute;
   top: 100%;
   left: 0;
-  margin-top: 0.5rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 0.75rem;
+  margin-top: var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-3);
   z-index: 10;
   min-width: 300px;
   max-width: 400px;
@@ -257,9 +274,9 @@ export default {
 .item-entry {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  border-bottom: 1px solid #f1f5f9;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border);
 }
 
 .item-entry:last-child {
@@ -267,13 +284,13 @@ export default {
 }
 
 .item-name {
-  font-size: 0.875rem;
+  font-size: var(--text-base);
   font-weight: 500;
-  color: #0f172a;
+  color: var(--text);
 }
 
 .item-meta {
-  font-size: 0.813rem;
-  color: #64748b;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
 }
 </style>

@@ -1,0 +1,143 @@
+/*
+ * adesso SaaS design tokens.
+ * Import once in main.js before mounting: import './styles/tokens.css'
+ * Brand source: adesso SE corporate design (blue solid only, gray in 10% steps).
+ */
+
+:root {
+  /* Brand */
+  --brand: #006ec7;            /* adesso Blue - solid only, never with opacity */
+  --brand-hover: #005ba6;      /* darker solid shade for hover/pressed; not a tint */
+  --on-brand: #ffffff;
+
+  /* adesso Gray #887d75 in 10% steps, precomputed as solid colors on white */
+  --gray-10: #f3f2f1;
+  --gray-20: #e7e5e3;
+  --gray-30: #dbd8d6;
+  --gray-40: #cfcbc8;
+  --gray-50: #c4beba;
+  --gray-60: #b8b1ac;
+  --gray-70: #aca49e;
+  --gray-80: #a09791;
+  --gray-90: #948a83;
+  --gray-100: #887d75;
+
+  /* Accents - highlights, chips, charts; never body text */
+  --accent-yellow: #ffff00;
+  --accent-orange: #ff9868;
+  --accent-pink: #f566ba;
+  --accent-violet: #461ebe;
+  --accent-turquoise: #28dcaa;
+  --accent-green: #76c800;
+
+  /* Surfaces and text */
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --border: var(--gray-20);
+  --border-strong: var(--gray-30);
+  --text: #3a3531;             /* darkened adesso gray: adesso Gray itself fails AA for body text */
+  --text-muted: var(--gray-100);
+  --heading: var(--brand);
+  --scrim: rgba(30, 27, 24, 0.45); /* warm near-black behind modals and the mobile drawer */
+
+  /* Status (functional; red is outside the brand palette and reserved for errors) */
+  --status-success-bg: #eaf6d9;  --status-success-fg: #2f5200;  --status-success-dot: var(--accent-green);
+  --status-info-bg: #d8f8ef;     --status-info-fg: #0b6b51;     --status-info-dot: var(--accent-turquoise);
+  --status-warning-bg: #ffeadf;  --status-warning-fg: #8a3a12;  --status-warning-dot: var(--accent-orange);
+  --status-danger-bg: #fde4e7;   --status-danger-fg: #a3182f;   --status-danger-dot: #d9304f;
+  --status-neutral-bg: var(--gray-10); --status-neutral-fg: var(--text); --status-neutral-dot: var(--gray-100);
+
+  /* Charts - fixed series order */
+  --chart-1: var(--brand);
+  --chart-2: var(--accent-turquoise);
+  --chart-3: var(--accent-orange);
+  --chart-4: var(--accent-violet);
+  --chart-5: var(--accent-green);
+  --chart-6: var(--accent-pink);
+
+  /* Typography */
+  --font-sans: "Fira Sans", Arial, sans-serif;
+  --font-heading: "Klavika", "Fira Sans", Arial, sans-serif;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 16px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 28px;
+
+  /* Spacing - 4px base; use only these */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Shape and depth */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(58, 53, 49, 0.06);
+  --shadow-md: 0 4px 12px rgba(58, 53, 49, 0.08);
+  --shadow-lg: 0 16px 40px rgba(58, 53, 49, 0.16);
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--brand);
+
+  /* Layout */
+  --sidebar-w: 248px;
+  --sidebar-w-collapsed: 72px;
+  --topbar-h: 64px;
+  --content-max: 1440px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-slow: 240ms;
+}
+
+/* Base elements */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  color: var(--heading);
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0;
+}
+h1 { font-size: var(--text-xl); }
+h2 { font-size: var(--text-lg); }
+h3 { font-size: var(--text-md); color: var(--text); font-weight: 600; }
+
+a { color: var(--brand); }
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

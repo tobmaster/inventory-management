@@ -59,7 +59,8 @@
         class="reset-filters-btn"
         @click="resetFilters"
         :disabled="!hasActiveFilters"
-        title="Reset all filters"
+        :title="t('filters.resetAll')"
+        :aria-label="t('filters.resetAll')"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
@@ -102,93 +103,116 @@ export default {
 
 <style scoped>
 .filters-bar {
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 0.75rem 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   position: sticky;
-  top: 70px;
-  z-index: 90;
+  top: var(--topbar-h);
+  z-index: 100;
 }
 
 .filters-container {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  padding: var(--space-3) var(--space-8);
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  align-items: flex-end;
+  gap: var(--space-3);
 }
 
 .filters-grid {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-4);
   flex: 1;
+  min-width: 0;
 }
 
 .filter-group {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
 }
 
 .filter-group label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #64748b;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
 .filter-select {
-  padding: 0.4rem 0.75rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.813rem;
-  color: #0f172a;
-  background: white;
+  height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  color: var(--text);
+  background: var(--surface);
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
-  min-width: 140px;
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+  min-width: 152px;
 }
 
 .filter-select:hover {
-  border-color: #94a3b8;
+  border-color: var(--gray-60);
 }
 
-.filter-select:focus {
+.filter-select:focus-visible {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--brand);
+  box-shadow: var(--focus-ring);
 }
 
+/* Ghost button, aligned with the select row */
 .reset-filters-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.4rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  color: #64748b;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background var(--dur-fast) var(--ease);
   flex-shrink: 0;
 }
 
 .reset-filters-btn:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #0f172a;
+  background: var(--gray-10);
+}
+
+.reset-filters-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .reset-filters-btn:disabled {
-  opacity: 0.3;
+  color: var(--gray-60);
   cursor: not-allowed;
 }
 
 .reset-filters-btn svg {
   width: 18px;
   height: 18px;
+}
+
+@media (max-width: 959px) {
+  .filters-bar {
+    position: static;
+  }
+  .filters-container {
+    padding: var(--space-3) var(--space-4);
+  }
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .filter-select {
+    min-width: 0;
+    width: 100%;
+  }
 }
 </style>
