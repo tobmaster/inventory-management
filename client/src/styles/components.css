@@ -1,0 +1,350 @@
+/*
+ * Shared component styles built on tokens.css.
+ * Views and components use these classes instead of redefining them in scoped styles.
+ */
+
+/* Page header */
+.page-header {
+  margin-bottom: var(--space-6);
+}
+
+.page-header h2 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-1);
+}
+
+.page-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  max-width: 72ch;
+}
+
+/* KPI tiles */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5) var(--space-6);
+  transition: box-shadow var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
+}
+
+/* 3px accent bar; the variant picks the color */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--brand);
+}
+
+.stat-card.success::before { background: var(--status-success-dot); }
+.stat-card.info::before { background: var(--status-info-dot); }
+.stat-card.warning::before { background: var(--status-warning-dot); }
+.stat-card.danger::before { background: var(--status-danger-dot); }
+
+.stat-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-2);
+}
+
+.stat-value {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+/* Tables */
+.table-container {
+  overflow-x: auto;
+  margin: 0 calc(-1 * var(--space-6));
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+thead {
+  background: var(--gray-10);
+}
+
+th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+td {
+  height: 48px;
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  font-size: var(--text-base);
+}
+
+/* Align the first and last columns with the card's padding */
+th:first-child, td:first-child { padding-left: var(--space-6); }
+th:last-child, td:last-child { padding-right: var(--space-6); }
+
+tbody tr {
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+tbody tr:hover {
+  background: var(--gray-10);
+}
+
+/* Status chips */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+  background: var(--status-neutral-bg);
+  color: var(--status-neutral-fg);
+}
+
+.badge.success, .badge.increasing { background: var(--status-success-bg); color: var(--status-success-fg); }
+.badge.info, .badge.low { background: var(--status-info-bg); color: var(--status-info-fg); }
+.badge.warning, .badge.medium { background: var(--status-warning-bg); color: var(--status-warning-fg); }
+.badge.danger, .badge.high, .badge.decreasing { background: var(--status-danger-bg); color: var(--status-danger-fg); }
+.badge.stable { background: var(--status-neutral-bg); color: var(--status-neutral-fg); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font: 500 var(--text-base) / 1 var(--font-sans);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+/* Solid disabled colors: opacity would turn a primary button into a tint of adesso Blue */
+.btn:disabled {
+  cursor: not-allowed;
+  background: var(--gray-20);
+  border-color: var(--gray-20);
+  color: var(--gray-100);
+}
+
+.btn-primary { background: var(--brand); color: var(--on-brand); }
+.btn-primary:hover:not(:disabled) { background: var(--brand-hover); }
+
+.btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+.btn-secondary:hover:not(:disabled) { background: var(--gray-10); }
+
+.btn-ghost { background: transparent; color: var(--brand); }
+.btn-ghost:hover:not(:disabled) { background: var(--gray-10); }
+
+.btn-icon {
+  width: 40px;
+  padding: 0;
+  background: transparent;
+  color: var(--text-muted);
+}
+.btn-icon:hover:not(:disabled) { background: var(--gray-10); color: var(--text); }
+
+/* Form controls */
+.input, .select {
+  height: 40px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: var(--text-base) var(--font-sans);
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+
+.input:hover, .select:hover { border-color: var(--gray-50); }
+.input:focus-visible, .select:focus-visible { outline: none; border-color: var(--brand); box-shadow: var(--focus-ring); }
+
+/* Modals: shared by every *Modal.vue; components set only their own width */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: var(--space-4);
+}
+
+.modal-container {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+  font-size: var(--text-lg);
+  color: var(--heading);
+  margin: 0;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border);
+  background: var(--gray-10);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.close-button:hover {
+  background: var(--gray-10);
+  color: var(--text);
+}
+
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity var(--dur-slow) var(--ease);
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .modal-container,
+.modal-leave-active .modal-container {
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+  transform: translateY(8px) scale(0.98);
+}
+
+/* Feedback states */
+.loading {
+  text-align: center;
+  padding: var(--space-12);
+  color: var(--text-muted);
+}
+
+.error {
+  background: var(--status-danger-bg);
+  color: var(--status-danger-fg);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+}
+
+/* Page-load reveal: children rise in one after another (tokens.css cancels it for reduced motion) */
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.reveal {
+  animation: reveal-in 360ms var(--ease) both;
+}
+
+.reveal:nth-child(2) { animation-delay: 40ms; }
+.reveal:nth-child(3) { animation-delay: 80ms; }
+.reveal:nth-child(4) { animation-delay: 120ms; }
+.reveal:nth-child(5) { animation-delay: 160ms; }
+.reveal:nth-child(n + 6) { animation-delay: 200ms; }

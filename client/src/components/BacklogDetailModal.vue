@@ -5,7 +5,7 @@
         <div class="modal-container" @click.stop>
           <div class="modal-header">
             <h3 class="modal-title">Inventory Shortage Details</h3>
-            <button class="close-button" @click="close">
+            <button class="close-button" :aria-label="t('common.close')" @click="close">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
@@ -76,7 +76,7 @@
           </div>
 
           <div class="modal-footer">
-            <button class="btn-secondary" @click="close">Close</button>
+            <button class="btn btn-secondary" @click="close">Close</button>
           </div>
         </div>
       </div>
@@ -85,10 +85,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from '../composables/useI18n'
+import { useSound } from '../composables/useSound'
 
-const { translateProductName } = useI18n()
+const { t, translateProductName } = useI18n()
 
 const props = defineProps({
   isOpen: {
@@ -102,6 +103,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
+
+const { play } = useSound()
+// Audible cue on visibility change only (not on mount), so the modal feels responsive without playing at app start
+watch(() => props.isOpen, (open) => play(open ? 'open' : 'close'))
 
 const shortage = computed(() => {
   if (!props.backlogItem) return 0
@@ -124,89 +129,25 @@ const formatDate = (dateString) => {
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: 1rem;
-}
-
-.modal-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-  max-width: 700px;
-  width: 100%;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.modal-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #0f172a;
-  letter-spacing: -0.025em;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  color: #64748b;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  transition: all 0.15s ease;
-}
-
-.close-button:hover {
-  background: #f1f5f9;
-  color: #0f172a;
-}
-
-.modal-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 2rem;
-}
+.modal-container { max-width: 680px; }
 
 .shortage-header {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 1.5rem;
+  gap: var(--space-5);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-6);
 }
 
 .shortage-icon {
   width: 64px;
   height: 64px;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--on-brand);
   flex-shrink: 0;
 }
 
@@ -216,165 +157,98 @@ const formatDate = (dateString) => {
 }
 
 .item-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0 0 0.5rem 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 var(--space-1) 0;
 }
 
 .item-sku {
-  font-size: 0.875rem;
-  color: #64748b;
-  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
 }
 
+.shortage-icon { background: var(--status-danger-dot); }
+
 .priority-badge {
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
+  text-transform: capitalize;
   flex-shrink: 0;
 }
 
-.priority-badge.high {
-  background: #fecaca;
-  color: #991b1b;
-}
-
-.priority-badge.medium {
-  background: #fed7aa;
-  color: #92400e;
-}
-
-.priority-badge.low {
-  background: #dbeafe;
-  color: #1e40af;
-}
+.priority-badge.high { background: var(--status-danger-bg); color: var(--status-danger-fg); }
+.priority-badge.medium { background: var(--status-warning-bg); color: var(--status-warning-fg); }
+.priority-badge.low { background: var(--status-info-bg); color: var(--status-info-fg); }
 
 .shortage-summary {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .summary-card {
-  padding: 1.25rem;
-  border-radius: 10px;
-  border: 2px solid;
-}
-
-.summary-card.danger {
-  border-color: #fecaca;
-  background: #fef2f2;
-}
-
-.summary-card.warning {
-  border-color: #fed7aa;
-  background: #fffbeb;
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  background: var(--surface);
 }
 
 .summary-label {
-  font-size: 0.813rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #64748b;
-  margin-bottom: 0.5rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
 }
 
 .summary-value {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
 }
 
-.summary-card.danger .summary-value {
-  color: #dc2626;
-}
-
-.summary-card.warning .summary-value {
-  color: #f59e0b;
-}
+.summary-card.danger { border-left-color: var(--status-danger-dot); }
+.summary-card.warning { border-left-color: var(--status-warning-dot); }
+.summary-card.danger .summary-value { color: var(--status-danger-fg); }
+.summary-card.warning .summary-value { color: var(--status-warning-fg); }
 
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  gap: var(--space-5) var(--space-6);
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-1);
 }
 
 .info-label {
-  font-size: 0.813rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #64748b;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
 }
 
 .info-value {
-  font-size: 0.938rem;
-  color: #0f172a;
+  font-size: var(--text-md);
+  color: var(--text);
   font-weight: 500;
 }
 
 .info-value.order-id,
 .info-value.sku {
-  font-family: 'Monaco', 'Courier New', monospace;
-  color: #2563eb;
-}
-
-.modal-footer {
-  padding: 1.5rem;
-  border-top: 1px solid #e2e8f0;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-}
-
-.btn-secondary {
-  padding: 0.625rem 1.25rem;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: #334155;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  font-family: inherit;
-}
-
-.btn-secondary:hover {
-  background: #e2e8f0;
-  border-color: #cbd5e1;
-}
-
-/* Modal transition animations */
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-active .modal-container,
-.modal-leave-active .modal-container {
-  transition: transform 0.2s ease;
-}
-
-.modal-enter-from .modal-container,
-.modal-leave-to .modal-container {
-  transform: scale(0.95);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--brand);
 }
 </style>

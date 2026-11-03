@@ -62,6 +62,9 @@ npm install && npm run dev
 4. Inventory filters don't support month (no time dimension)
 5. Revenue goals: $800K/month single, $9.6M YTD all months
 
+## Code Style
+- Always document non-obvious logic changes with comments
+
 ## File Locations
 - Views: `client/src/views/*.vue`
 - API Client: `client/src/api.js`
@@ -70,7 +73,15 @@ npm install && npm run dev
 - Styles: `client/src/App.vue`
 
 ## Design System
-- Colors: Slate/gray (#0f172a, #64748b, #e2e8f0)
-- Status: green/blue/yellow/red
+adesso SaaS look (see `.claude/skills/adesso-saas-redesign`)
+- Tokens: `client/src/styles/tokens.css` - use `var(--...)`, never hard-coded hex. adesso Blue `--brand` is solid only (no opacity, tints or gradients)
+- Text: `--text` for body, `--text-muted` (adesso Gray) only for secondary labels at 13px and above
+- Status: `--status-{success,info,warning,danger,neutral}-{bg,fg,dot}`; charts use `--chart-1..6` in order
+- Spacing: `--space-*` scale only (4px base); radii, shadows and motion also come from tokens
+- Shared classes: `client/src/styles/components.css` (cards, KPI tiles, tables, badges, buttons, inputs, modals, `.reveal`) - don't redefine them in scoped styles
+- Layout: left sidebar in `App.vue` (collapsible, drawer below 960px); groups and topbar breadcrumb come from route `meta` in `main.js`
+- Font: Fira Sans via Google Fonts. Don't commit Klavika files, internal font URLs or the adesso logo (public repo)
+- Icons: thin outline inline SVG (1.5px stroke, 20px, `currentColor`)
+- Sounds: `composables/useSound.js`, off until the user enables them in the sidebar. Opt an element out with `data-sound="off"`
 - Charts: Custom SVG, CSS Grid for layouts
 - No emojis in UI

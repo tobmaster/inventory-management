@@ -53,3 +53,6 @@ logs/
 
 # Environment variables
 .env
+
+# Restocking orders written at runtime by the API (local data, keep out of the public repo)
+server/data/restocking_orders.json

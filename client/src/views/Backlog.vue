@@ -9,32 +9,30 @@
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
       <div class="stats-grid">
-        <div class="stat-card danger">
+        <div class="stat-card danger reveal">
           <div class="stat-label">High Priority</div>
           <div class="stat-value">{{ getBacklogByPriority('high').length }}</div>
         </div>
-        <div class="stat-card warning">
+        <div class="stat-card warning reveal">
           <div class="stat-label">Medium Priority</div>
           <div class="stat-value">{{ getBacklogByPriority('medium').length }}</div>
         </div>
-        <div class="stat-card info">
+        <div class="stat-card info reveal">
           <div class="stat-label">Low Priority</div>
           <div class="stat-value">{{ getBacklogByPriority('low').length }}</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card reveal">
           <div class="stat-label">Total Backlog Items</div>
           <div class="stat-value">{{ backlogItems.length }}</div>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card reveal">
         <div class="card-header">
           <h3 class="card-title">Backlog Items</h3>
         </div>
-        <div v-if="backlogItems.length === 0" style="padding: 3rem; text-align: center;">
-          <p style="font-size: 1.125rem; color: #10b981; font-weight: 600;">
-            ✓ No backlog items - all orders can be fulfilled!
-          </p>
+        <div v-if="backlogItems.length === 0" class="empty-state">
+          <p>No backlog items - all orders can be fulfilled!</p>
         </div>
         <div v-else class="table-container">
           <table>
@@ -43,10 +41,10 @@
                 <th>Order ID</th>
                 <th>SKU</th>
                 <th>Item Name</th>
-                <th>Quantity Needed</th>
-                <th>Quantity Available</th>
-                <th>Shortage</th>
-                <th>Days Delayed</th>
+                <th class="num">Quantity Needed</th>
+                <th class="num">Quantity Available</th>
+                <th class="num">Shortage</th>
+                <th class="num">Days Delayed</th>
                 <th>Priority</th>
               </tr>
             </thead>
@@ -55,15 +53,15 @@
                 <td><strong>{{ item.order_id }}</strong></td>
                 <td><strong>{{ item.item_sku }}</strong></td>
                 <td>{{ item.item_name }}</td>
-                <td>{{ item.quantity_needed }}</td>
-                <td>{{ item.quantity_available }}</td>
-                <td>
+                <td class="num">{{ item.quantity_needed }}</td>
+                <td class="num">{{ item.quantity_available }}</td>
+                <td class="num">
                   <span class="badge danger">
                     {{ item.quantity_needed - item.quantity_available }} units short
                   </span>
                 </td>
-                <td>
-                  <span :style="{ color: item.days_delayed > 7 ? '#ef4444' : '#f59e0b' }">
+                <td class="num">
+                  <span :class="item.days_delayed > 7 ? 'delay-severe' : 'delay-moderate'">
                     {{ item.days_delayed }} days
                   </span>
                 </td>
@@ -150,3 +148,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.empty-state { padding: var(--space-12); text-align: center; }
+.empty-state p { margin: 0; font-size: var(--text-md); font-weight: 600; color: var(--status-success-fg); }
+.delay-severe { color: var(--status-danger-fg); font-weight: 600; }
+.delay-moderate { color: var(--status-warning-fg); font-weight: 600; }
+</style>

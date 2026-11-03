@@ -35,5 +35,10 @@ recent_transactions = load_json_file('transactions.json')
 # Load purchase orders
 purchase_orders = load_json_file('purchase_orders.json')
 
+# Restocking orders are written back to disk by the API, so the file may not exist yet
+# on a fresh checkout (it is gitignored to keep local orders out of the public repo)
+RESTOCKING_ORDERS_FILE = os.path.join(DATA_DIR, 'restocking_orders.json')
+restocking_orders = load_json_file('restocking_orders.json') if os.path.exists(RESTOCKING_ORDERS_FILE) else []
+
 # All data is now loaded from JSON files in the data/ directory
 # This allows for easier maintenance and updates of the sample data

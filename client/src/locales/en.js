@@ -7,7 +7,16 @@ export default {
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
     companyName: 'Catalyst Components',
-    subtitle: 'Inventory Management System'
+    subtitle: 'Inventory Management System',
+    reports: 'Reports',
+    groupOperations: 'Operations',
+    groupFinance: 'Finance',
+    sounds: 'Sound effects',
+    collapse: 'Collapse sidebar',
+    expand: 'Expand sidebar',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    breadcrumb: 'Breadcrumb'
   },
 
   // Dashboard
@@ -195,7 +204,8 @@ export default {
     category: 'Category',
     orderStatus: 'Order Status',
     all: 'All',
-    allMonths: 'All Months'
+    allMonths: 'All Months',
+    resetAll: 'Reset all filters'
   },
 
   // Statuses
@@ -301,7 +311,8 @@ export default {
     priority: 'Priority',
     dueDate: 'Due Date',
     addTask: 'Add Task',
-    noTasks: 'No tasks yet. Add your first task above!'
+    noTasks: 'No tasks yet. Add your first task above!',
+    delete: 'Delete task'
   },
 
   // Language
